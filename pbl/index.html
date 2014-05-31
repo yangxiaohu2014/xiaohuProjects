@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>瀑布流</title>
+
+<style type="text/css">
+*{margin:0;padding:0;}
+a,img{border:0;}
+body{width:80%;test-align:center;font:12px/180% Arial, Helvetica, sans-serif, "新宋体";background:#eee;}
+/* container */
+#container{position:absolute;test-align:center;background:#eee;margin:0 auto;}
+#container ul{width:250px;list-style:none;float:right;text-align:center;margin:20px 0 0 0;border:none;}
+#container ul li{margin-bottom:15px;list-style:none;with:250px;}
+#container ul li img{width:230px;overflow:scroll;}
+</style>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/pbl.js"></script>
+</head>
+
+<body>                                 
+                                           
+<div id="container">                       
+	<ul  id="firstUl"></ul>                
+	<ul></ul>                             
+    <ul></ul>
+    <ul></ul>
+	<ul></ul>	
+</div>
+<script type="text/javascript">
+    init();
+	$(window).on("scroll",function(){                                       //此程序在safari浏览器下运行正常，如果在其他浏览器下有bug，敬请指正；
+		$maxUl = getMaxUl();                                                //该瀑布流式布局借鉴了ul li 布局，程序会根据浏览器可见区域的宽度来决定列数，列数不少于4列
+		if($maxUl.height() <= $(window).scrollTop()+$(window).height()-20){ //文档加载完毕时调用初始化函数inite，继续加载采用的动态方法，不影响之前已加载的内容
+		//当最短的ul的高度比窗口滚出去的高度+浏览器高度大时加载新图片              //当窗口尺寸改变引起列数变化时，对已加载的内容重新排列，但不需重头加载内容，已加载的内容不会丢失
+		//setTimeout('loadMeinv()',500);                                    //当鼠标经过图片上方时，会产生动画效果，如果连续经过几张照片，会产生浪光效果，此效果只是为了增添视觉效果
+		loadMeinv();                                                        //初始化时，可以通过initH来设置初始加载的页面高度
+		}
+	})
+   window.onload=window.onresize = function() {
+	   $li=$("#container ul li").clone();//全局变量,用这个变量保存之前已经加载的列项
+	   var $ul=$("#container ul");
+	   UlW=$ul.eq(0).width();//全局变量
+	   var n0 = document.documentElement.clientWidth /UlW | 0;  //计算页面能排下多少列
+	   n=Math.max(n0,4);//页面至少有4列
+	   if(n!=$ul.size()){
+		   if(n==4){
+			  $("#container").append('<ul></ul>');
+		   }
+		   else{
+			  $("#container ul:last").remove();
+		   }
+	   }
+       $("#container").width(n*UlW);//设置宽带，不能写为$("#container").css("width",'n*UlW+"px"')...
+	   	 var offsetl=(document.documentElement.clientWidth-$("#container").width())/2;
+		$("#container").offset({left:offsetl});//用于设置容器在body中居中对齐
+       reSort($li);
+};
+</script>
+
+</body>
+</html
